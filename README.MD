@@ -1,47 +1,53 @@
-    1. Install dependecies
-    For python-postgres connection install PyGreSQL:
+1. Install dependecies
+For python-postgres connection install PyGreSQL:
 
-sudo yum install PyGreSQL
+    sudo yum install PyGreSQL
+or
+    sudo aptitude install python-pygresql
+or
+    sudo pip install PyGreSQL
 
-//or sudo aptitude install python-pygresql //or sudo pip install PyGreSQL
-    For test_speed_sql_weekly.py we need install kernprof
+For test_speed_sql_weekly.py we need install kernprof
 
-sudo pip install line_profiler
+    sudo pip install line_profiler
 
-    2. Modificate Sympa DB
-    That script's adding new column (creation_time_list) into sympa list_table and it's inserting default current date into new column for new
-    rows and creation date for old rows.
-    Before use change this field for connection to DB in update_sympa_db.py:
+2. Modificate Sympa DB
+That script's adding new column (creation_time_list) into sympa list_table and it's inserting default current date into new column for new
+rows and creation date for old rows.
+Before use change this field for connection to DB in update_sympa_db.py:
 
-mcedit update_sympa_db.py
+    mcedit update_sympa_db.py
 
-///mondbconn = pgdb.connect(user='postgres', password = '46KNVgw274', database = 'sympa')
+    ///mondbconn = pgdb.connect(user='postgres', password = '46KNVgw274', database = 'sympa')
 
-    Then (don't use it twice!!):
-python update_sympa_db.py
+Then (don't use it twice!!):
 
-    3. Test SQL speed of send_weekly.py script
-    Use:
+    python update_sympa_db.py
 
-kernprof -l -v test_speed_sql_weekly.py
+3. Test SQL speed of send_weekly.py script
+Use:
 
-    4. Configure RDK Mailing weekly subscription digest (send_weekly.py)
-    Before use change this field for connection to DB in update_sympa_db.py:
-mcedit send_weekly.py
-///mondbconn = pgdb.connect(user='postgres', password = '46KNVgw274', database = 'sympa')
+    kernprof -l -v test_speed_sql_weekly.py
 
-    Than copy send_weekly.py to crone script location.
+4. Configure RDK Mailing weekly subscription digest (send_weekly.py)
+Before use change this field for connection to DB in update_sympa_db.py:
 
-sudo chmod +x send_weekly.py
+    mcedit send_weekly.py
 
-crontab -e
+    ///mondbconn = pgdb.connect(user='postgres', password = '46KNVgw274', database = 'sympa')
 
-    (press 'i' for insert)
-    and insert:
+Than copy send_weekly.py to crone script location.
 
-0 23 * * 0 /location/send_weekly.py
+    sudo chmod +x send_weekly.py
 
-    (save in vi Esc + :wq)
-    Show cron changes:
+    crontab -e
 
-cronetab -l
+(press 'i' for insert)
+and insert:
+
+    0 23 * * 0 /location/send_weekly.py
+
+(save in vi Esc + :wq)
+Show cron changes:
+
+    cronetab -l
