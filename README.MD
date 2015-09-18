@@ -10,11 +10,11 @@ or
 
     sudo pip install PyGreSQL
 
-For test_speed_sql_weekly.py we need install kernprof
+For test_speed_sql_weekly.py we need install kernprof:
 
     sudo pip install line_profiler
 
-2. Modificate Sympa DB
+2. Modificate Sympa DB.
 That script's adding new column (creation_time_list) into sympa list_table and it's inserting default current date into new column for new
 rows and creation date for old rows.
 Before use change this field for connection to DB in update_sympa_db.py:
