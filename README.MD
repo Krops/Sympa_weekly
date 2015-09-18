@@ -1,11 +1,13 @@
-1. Install dependecies
-For python-postgres connection install PyGreSQL:
+1. Install dependecies for python-postgres connection install PyGreSQL:
 
     sudo yum install PyGreSQL
 
 or
+
     sudo aptitude install python-pygresql
+
 or
+
     sudo pip install PyGreSQL
 
 For test_speed_sql_weekly.py we need install kernprof
