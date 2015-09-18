@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pgdb
-from email.mime.text import MIMEText
+import sys,os
 
 mondbconn = pgdb.connect(user='postgres', password='46KNVgw274', database='sympa')
 cursor = mondbconn.cursor()

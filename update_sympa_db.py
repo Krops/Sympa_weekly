@@ -42,5 +42,15 @@ for name in list_names:
 print('Print All lists and creation time')
 print(table_list)
 print('\n')
+sql3 = "alter table list_table add column creation_time_list timestamp not null default current_timestamp"
+try:
+    cursor.execute(sql3)
+    mondbconn.commit()
+except:
+    print("Sql Error to add new column")
+for key, value in table_list.iteritems():
+    sql4 = "update list_table SET creation_time_list='" + value + "' where name_list='" + key + "'"
+    cursor.execute(sql4)
+mondbconn.commit()
 cursor.close()
 mondbconn.close()
