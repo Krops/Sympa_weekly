@@ -2,6 +2,7 @@
 For python-postgres connection install PyGreSQL:
 
     sudo yum install PyGreSQL
+
 or
     sudo aptitude install python-pygresql
 or
