@@ -1,4 +1,4 @@
-1. Install dependecies for python-postgres connection install PyGreSQL:
+1. Install dependencies for python-postgres connection install PyGreSQL:
 
     sudo yum install PyGreSQL
 
@@ -17,7 +17,7 @@ For test_speed_sql_weekly.py we need install kernprof:
 2. Modificate Sympa DB.
 That script's adding new column (creation_time_list) into sympa list_table and it's inserting default current date into new column for new
 rows and creation date for old rows.
-Before use change this field for connection to DB in update_sympa_db.py:
+Before use change this field for connection to DB:
 
     mcedit update_sympa_db.py
 
@@ -33,7 +33,7 @@ Use:
     kernprof -l -v test_speed_sql_weekly.py
 
 4. Configure RDK Mailing weekly subscription digest (send_weekly.py)
-Before use change this field for connection to DB in update_sympa_db.py:
+Before use change this field for connection to DB:
 
     mcedit send_weekly.py
 
