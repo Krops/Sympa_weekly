@@ -1,57 +1,58 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pgdb
+import sys
 
 table_list = {}
 current_table = ''
 result_string = ''
 mondbconn = pgdb.connect(user='postgres', password='', database='sympa')
 cursor = mondbconn.cursor()
-sql = "select name_list from list_table;"
+get_list_names = "select name_list from list_table;"
 list_names = []
 try:
-    cursor.execute(sql)
-except:
-    print "SQL query failed"
+    cursor.execute(get_list_names)
+except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
+    sys.exit(0)
 while (1):
-    # считываем строку из ответа на SQL запрос
     row = cursor.fetchone()
-    if row == None:
+    if row is None:
         break
-    try:
-        list_names.append(str(row[0]))
-
-    except:
-        print('Error to add list name')
+    else:
+        try:
+            list_names.append(str(row[0]))
+        except IndexError:
+            print('Error index in row')
 print('Print all lists')
 print(list_names)
 print('\n')
 for name in list_names:
-    sql2 = "select list_admin,date_admin from admin_table where list_admin='{0}' order by date_admin limit 1".format(
-        name)
+    sql_get_creator_date_list = "select list_admin,date_admin from admin_table where list_admin=%s  order by date_admin limit 1"
     try:
-        cursor.execute(sql2)
-    except:
-        print('Wrong SQL')
+        cursor.execute(sql_get_creator_date_list, (name,))
+    except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
         break
     row = cursor.fetchone()
     try:
         table_list[row[0]] = row[1]
-    except:
-        print('error read list')
+    except IndexError:
+        print('Error index in row')
 
 print('Print All lists and creation time')
 print(table_list)
 print('\n')
-sql3 = "alter table list_table add column creation_time_list timestamp not null default current_timestamp"
+sql_add_new_col_list = "alter table list_table add column creation_time_list timestamp not null default current_timestamp"
 try:
-    cursor.execute(sql3)
+    cursor.execute(sql_add_new_col_list)
     mondbconn.commit()
-except:
-    print("Sql Error to add new column")
+except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
+    sys.exit(0)
 for key, value in table_list.iteritems():
-    sql4 = "update list_table SET creation_time_list='{0}' where name_list='{1}'".format(value, key)
-    cursor.execute(sql4)
+    sql_update_list = "update list_table SET creation_time_list=%s where name_list=%s"
+    try:
+        cursor.execute(sql_update_list, (value, key))
+    except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
+        sys.exit(0)
 mondbconn.commit()
 cursor.close()
 mondbconn.close()
