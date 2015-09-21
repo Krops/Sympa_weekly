@@ -7,10 +7,7 @@ import sys,os
 mondbconn = pgdb.connect(user='postgres', password='', database='sympa')
 cursor = mondbconn.cursor()
 
-
-# Create new 7 days list
-
-
+#Test speed function
 @profile
 def sql_part():
     weekly_list = []
@@ -29,6 +26,7 @@ def sql_part():
             except IndexError:
                 sys.exit(0)
     #print(weekly_list)
+
     # Create list of subscribed users
     user_list = []
     sql_get_user_sub = "select distinct(user_subscriber) from subscriber_table"
@@ -45,6 +43,7 @@ def sql_part():
                 user_list.append(row[0])
             except IndexError:
                 sys.exit(0)
+
     # Create user dict with their own subscribtion
     subscribed_list = {}
     for user in user_list:
@@ -69,7 +68,7 @@ def sql_part():
     cursor.close()
     mondbconn.close()
 
-
+#Execute sql_part function
 if __name__ == "__main__":
     try:
         sql_part()

@@ -8,6 +8,8 @@ current_table = ''
 result_string = ''
 mondbconn = pgdb.connect(user='postgres', password='', database='sympa')
 cursor = mondbconn.cursor()
+
+# Get all list names from list_table
 get_list_names = "select name_list from list_table;"
 list_names = []
 try:
@@ -26,6 +28,8 @@ while (1):
 print('Print all lists')
 print(list_names)
 print('\n')
+
+# Get creators and creation data
 for name in list_names:
     sql_get_creator_date_list = "select list_admin,date_admin from admin_table where list_admin=%s  order by date_admin limit 1"
     try:
@@ -41,6 +45,8 @@ for name in list_names:
 print('Print All lists and creation time')
 print(table_list)
 print('\n')
+
+# Add creation_time_list column to list_table
 sql_add_new_col_list = "alter table list_table add column creation_time_list timestamp not null default current_timestamp"
 try:
     cursor.execute(sql_add_new_col_list)
