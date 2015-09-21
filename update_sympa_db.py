@@ -27,7 +27,8 @@ print('Print all lists')
 print(list_names)
 print('\n')
 for name in list_names:
-    sql2 = "select list_admin,date_admin from admin_table where list_admin='" + name + "' order by date_admin limit 1"
+    sql2 = "select list_admin,date_admin from admin_table where list_admin='{0}' order by date_admin limit 1".format(
+        name)
     try:
         cursor.execute(sql2)
     except:
@@ -49,7 +50,7 @@ try:
 except:
     print("Sql Error to add new column")
 for key, value in table_list.iteritems():
-    sql4 = "update list_table SET creation_time_list='" + value + "' where name_list='" + key + "'"
+    sql4 = "update list_table SET creation_time_list='{0}' where name_list='{1}'".format(value, key)
     cursor.execute(sql4)
 mondbconn.commit()
 cursor.close()

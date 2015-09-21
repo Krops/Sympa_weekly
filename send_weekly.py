@@ -42,11 +42,11 @@ while (1):
 subscribed_list = {}
 for user in user_list:
     user_sub = []
-    sql7 = "select list_subscriber from subscriber_table where user_subscriber='" + user + "'"
+    sql7 = "select list_subscriber from subscriber_table where user_subscriber='{0}'".format(user)
     try:
         cursor.execute(sql7)
     except:
-        print('Error to read ' + user + ' subscribtion')
+        print('Error to read {0} subscribtion'.format(user))
         continue
     while (1):
         row = cursor.fetchone()
@@ -61,14 +61,15 @@ mondbconn.close()
 
 weekly_msg = '<html><head></head><body><b>New subscribtion lists for this week:</b><br>'
 for key, value in subscribed_list.iteritems():
-    sub_list = '<b>Your subscribtions:</b><br>'  # +'\n'.join(value) + '\n<a href="http://rdkmailer.ccp.xcal.tv/sympa/subscribe/">'+value+'</a>'
+    sub_list = '<b>Your subscribtions:</b><br>'
     for name in value:
-        sub_list += name + ' <a href="http://rdkmailer.ccp.xcal.tv/sympa/signoff/' + name + '">Unsubscribe</a><br>'
+        sub_list += name + ' <a href="http://rdkmailer.ccp.xcal.tv/sympa/signoff/{0}">Unsubscribe</a><br>'.format(name)
     for name in weekly_list:
         if name in sub_list:
             weekly_msg += name + '<br>'
         else:
-            weekly_msg += name + ' <a href="http://rdkmailer.ccp.xcal.tv/sympa/subscribe/' + name + '">Subscribe</a><br>'
+            weekly_msg += name + ' <a href="http://rdkmailer.ccp.xcal.tv/sympa/subscribe/{0}">Subscribe</a><br>'.format(
+                name)
 
     msg = MIMEText(weekly_msg + sub_list + '</body></html>', 'html')
     msg['Subject'] = 'RDK Mailing weekly subscription digest'

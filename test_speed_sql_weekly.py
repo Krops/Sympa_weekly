@@ -47,7 +47,7 @@ def sql_part():
     subscribed_list = {}
     for user in user_list:
         user_sub = []
-        sql7 = "select list_subscriber from subscriber_table where user_subscriber='" + user + "'"
+        sql7 = "select list_subscriber from subscriber_table where user_subscriber='{0}'".format(user)
         try:
             cursor.execute(sql7)
         except:
