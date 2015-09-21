@@ -23,7 +23,7 @@ while (1):
             weekly_list.append(row[0])
         except IndexError:
             sys.exit(0)
-print(weekly_list)
+# print(weekly_list)
 # Create list of subscribed users
 user_list = []
 sql_get_user_sub = "select distinct(user_subscriber) from subscriber_table"
@@ -54,9 +54,13 @@ for user in user_list:
         row = cursor.fetchone()
         if row is None:
             break
-        user_sub.append(row[0])
+        else:
+            try:
+                user_sub.append(row[0])
+            except IndexError:
+                sys.exit(0)
     subscribed_list[user] = user_sub
-print(subscribed_list)
+#print(subscribed_list)
 cursor.close()
 mondbconn.close()
 # Send emails to users
@@ -76,5 +80,6 @@ for key, value in subscribed_list.iteritems():
     msg = MIMEText(weekly_msg + sub_list + '</body></html>', 'html')
     msg['Subject'] = 'RDK Mailing weekly subscription digest'
     msg['To'] = key
+    print(msg.as_string())
     p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
     p.communicate(msg.as_string())

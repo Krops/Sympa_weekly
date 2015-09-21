@@ -31,12 +31,12 @@ for name in list_names:
     try:
         cursor.execute(sql_get_creator_date_list, (name,))
     except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
-        break
+        sys.exit(0)
     row = cursor.fetchone()
     try:
         table_list[row[0]] = row[1]
     except IndexError:
-        print('Error index in row')
+        sys.exit(0)
 
 print('Print All lists and creation time')
 print(table_list)
