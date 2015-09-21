@@ -5,7 +5,7 @@ import pgdb
 table_list = {}
 current_table = ''
 result_string = ''
-mondbconn = pgdb.connect(user='postgres', password='46KNVgw274', database='sympa')
+mondbconn = pgdb.connect(user='postgres', password='', database='sympa')
 cursor = mondbconn.cursor()
 sql = "select name_list from list_table;"
 list_names = []

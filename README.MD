@@ -21,7 +21,7 @@ Before use change this field for connection to DB:
 
     mcedit update_sympa_db.py
 
-    ///mondbconn = pgdb.connect(user='postgres', password = '46KNVgw274', database = 'sympa')
+    ///mondbconn = pgdb.connect(user='postgres', password = '', database = 'sympa')
 
 Then (don't use it twice!!):
 
@@ -37,7 +37,7 @@ Before use change this field for connection to DB:
 
     mcedit send_weekly.py
 
-    ///mondbconn = pgdb.connect(user='postgres', password = '46KNVgw274', database = 'sympa')
+    ///mondbconn = pgdb.connect(user='postgres', password = '', database = 'sympa')
 
 Than copy send_weekly.py to crone script location.
 

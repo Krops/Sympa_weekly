@@ -4,7 +4,7 @@
 import pgdb
 import sys,os
 
-mondbconn = pgdb.connect(user='postgres', password='46KNVgw274', database='sympa')
+mondbconn = pgdb.connect(user='postgres', password='', database='sympa')
 cursor = mondbconn.cursor()
 
 
