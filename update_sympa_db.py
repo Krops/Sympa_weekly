@@ -6,7 +6,7 @@ import sys
 table_list = {}
 current_table = ''
 result_string = ''
-mondbconn = pgdb.connect(user='postgres', password='', database='sympa')
+mondbconn = pgdb.connect(user='postgres', password='', database='sympa', host='localhost')
 cursor = mondbconn.cursor()
 
 # Get all list names from list_table

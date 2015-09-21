@@ -5,7 +5,7 @@ import pgdb
 from email.mime.text import MIMEText
 from subprocess import Popen, PIPE
 import sys
-mondbconn = pgdb.connect(user='postgres', password='', database='sympa')
+mondbconn = pgdb.connect(user='postgres', password='', database='sympa', host='localhost')
 cursor = mondbconn.cursor()
 
 # Create new 7 days list
