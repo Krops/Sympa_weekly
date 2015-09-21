@@ -22,7 +22,7 @@ while (1):
         try:
             list_names.append(str(row[0]))
         except IndexError:
-            print('Error index in row')
+            sys.exit(0)
 print('Print all lists')
 print(list_names)
 print('\n')
