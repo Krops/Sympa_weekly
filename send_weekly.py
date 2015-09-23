@@ -10,7 +10,7 @@ cursor = mondbconn.cursor()
 
 # Create new 7 days list
 weekly_list = []
-sql_get_week_names = "select name_list from list_table where creation_time_list > current_timestamp - interval '7 days'"
+sql_get_week_names = "select name_list from list_table where status_list='open' and creation_time_list > current_timestamp - interval '7 days'"
 try:
     cursor.execute(sql_get_week_names)
 except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
