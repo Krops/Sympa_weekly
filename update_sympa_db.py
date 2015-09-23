@@ -15,7 +15,7 @@ list_names = []
 try:
     cursor.execute(get_list_names)
 except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
-    sys.exit(0)
+    sys.exit(1)
 while (1):
     row = cursor.fetchone()
     if row is None:
@@ -24,7 +24,7 @@ while (1):
         try:
             list_names.append(str(row[0]))
         except IndexError:
-            sys.exit(0)
+            sys.exit(1)
 print('Print all lists')
 print(list_names)
 print('\n')
@@ -35,7 +35,7 @@ for name in list_names:
     try:
         cursor.execute(sql_get_creator_date_list, (name,))
     except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
-        sys.exit(0)
+        sys.exit(1)
     row = cursor.fetchone()
     if row is None:
         break
@@ -43,7 +43,7 @@ for name in list_names:
         try:
             table_list[row[0]] = row[1]
         except IndexError:
-            sys.exit(0)
+            sys.exit(1)
 
 print('Print All lists and creation time')
 print(table_list)
@@ -55,13 +55,13 @@ try:
     cursor.execute(sql_add_new_col_list)
     mondbconn.commit()
 except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
-    sys.exit(0)
+    sys.exit(1)
 for key, value in table_list.iteritems():
     sql_update_list = "update list_table SET creation_time_list=%s where name_list=%s"
     try:
         cursor.execute(sql_update_list, (value, key))
     except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
-        sys.exit(0)
+        sys.exit(1)
 mondbconn.commit()
 cursor.close()
 mondbconn.close()

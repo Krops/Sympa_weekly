@@ -15,7 +15,7 @@ def sql_part():
     try:
         cursor.execute(sql_get_week_names)
     except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
-        sys.exit(0)
+        sys.exit(1)
     while (1):
         row = cursor.fetchone()
         if row is None:
@@ -24,7 +24,7 @@ def sql_part():
             try:
                 weekly_list.append(row[0])
             except IndexError:
-                sys.exit(0)
+                sys.exit(1)
     #print(weekly_list)
 
     # Create list of subscribed users
@@ -33,7 +33,7 @@ def sql_part():
     try:
         cursor.execute(sql_get_user_sub)
     except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
-            sys.exit(0)
+            sys.exit(1)
     while (1):
         row = cursor.fetchone()
         if row is None:
@@ -42,7 +42,7 @@ def sql_part():
             try:
                 user_list.append(row[0])
             except IndexError:
-                sys.exit(0)
+                sys.exit(1)
 
     # Create user dict with their own subscribtion
     subscribed_list = {}
@@ -53,7 +53,7 @@ def sql_part():
             cursor.execute(sql_get_list_sub,(user,))
         except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
             print('Error to read {0} subscribtion'.format(user))
-            sys.exit(0)
+            sys.exit(1)
         while (1):
             row = cursor.fetchone()
             if row is None:
@@ -62,7 +62,7 @@ def sql_part():
                 try:
                     user_sub.append(row[0])
                 except IndexError:
-                    sys.exit(0)
+                    sys.exit(1)
         subscribed_list[user] = user_sub
     print(subscribed_list)
     cursor.close()
@@ -75,6 +75,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print('\nQuit!')
         try:
-            sys.exit(0)
+            sys.exit(1)
         except SystemExit:
-            os._exit(0)
+            os._exit(1)
