@@ -37,10 +37,13 @@ for name in list_names:
     except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
         sys.exit(0)
     row = cursor.fetchone()
-    try:
-        table_list[row[0]] = row[1]
-    except IndexError:
-        sys.exit(0)
+    if row is None:
+        break
+    else:
+        try:
+            table_list[row[0]] = row[1]
+        except IndexError:
+            sys.exit(0)
 
 print('Print All lists and creation time')
 print(table_list)
