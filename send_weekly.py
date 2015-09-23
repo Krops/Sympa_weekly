@@ -80,7 +80,7 @@ for key, value in subscribed_list.iteritems():
             weekly_msg += name + ' <a href="http://rdkmailer.ccp.xcal.tv/sympa/subscribe/{0}">Subscribe</a><br>'.format(
                 name)
 
-    msg = MIMEText(weekly_msg + sub_list + '</body></html>', 'html')
+    msg = MIMEText(sub_list + '<br>' + weekly_msg  + '</body></html>', 'html')
     msg['Subject'] = 'RDK Mailing weekly subscription digest'
     msg['To'] = key
     print(msg.as_string())
