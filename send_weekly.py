@@ -69,8 +69,8 @@ mondbconn.close()
 
 # Send emails to users
 for key, value in subscribed_list.iteritems():
-    weekly_msg = '<html><head></head><body><b>New subscribtion lists for this week:</b><br>'
-    sub_list = '<b>Your subscribtions:</b><br>'
+    weekly_msg = '<b>New subscribtion lists for this week:</b><br>'
+    sub_list = '<html><head></head><body><b>Your subscribtions:</b><br>'
     for name in value:
         sub_list += name + ' <a href="http://rdkmailer.ccp.xcal.tv/sympa/signoff/{0}">Unsubscribe</a><br>'.format(name)
     for name in weekly_list:
