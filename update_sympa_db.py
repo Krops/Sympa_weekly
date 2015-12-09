@@ -38,7 +38,7 @@ for name in list_names:
         sys.exit(1)
     row = cursor.fetchone()
     if row is None:
-        break
+        continue
     else:
         try:
             table_list[row[0]] = row[1]
