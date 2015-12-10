@@ -8,7 +8,7 @@ import sys
 import ldap
 import os
 import re
-mondbconn = pgdb.connect(user='sympa_user', password='WyLLSte9un', database='sympa', host='localhost')
+mondbconn = pgdb.connect(user='sympa_user', password='', database='sympa', host='localhost')
 cursor = mondbconn.cursor()
 
 
@@ -96,7 +96,7 @@ for dir in weekly_list:
 print(allowedGroups)
 
 # ldap initialize
-ldap_client = ldap.initialize('ldap://ldap.ae.ccp.cable.comcast.com:1389')
+ldap_client = ldap.initialize('ldap://:1389')
 ldap_base = 'ou=CCP,dc=ra,dc=ccp,dc=cable,dc=comcast,dc=com'
 #tesl = ldap_client.search_s(ldap_base, ldap.SCOPE_SUBTREE, '(cn={0})'.format('rdk_employee'))
 #print(tesl)
