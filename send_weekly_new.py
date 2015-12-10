@@ -134,9 +134,9 @@ for key, value in subscribed_list.iteritems():
     msg['Subject'] = 'RDK Mailing weekly subscription digest'
     msg['To'] = key
     print(key)
-    if 'ababich' in key:
-        print(msg.as_string())
-        p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
-        p.communicate(msg.as_string())
-    #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
-    #p.communicate(msg.as_string())
+    #if 'ababich' in key:
+        #print(msg.as_string())
+        #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
+        #p.communicate(msg.as_string())
+    p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
+    p.communicate(msg.as_string())
