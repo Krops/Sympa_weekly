@@ -8,7 +8,7 @@ import sys
 import ldap
 import os
 import re
-mondbconn = pgdb.connect(user='sympa_user', password='', database='sympa', host='localhost')
+mondbconn = pgdb.connect(user='sympa_user', password='WyLLSte9un', database='sympa', host='localhost')
 cursor = mondbconn.cursor()
 
 
@@ -28,8 +28,8 @@ while (1):
             weekly_list.append(row[0])
         except IndexError:
             sys.exit(1)
-# for test ------------------------------------
-weekly_list = ['rdktools-dev'] #!!!
+# for testing!!!!!!!!!!!!!!!!!!!
+weekly_list = ['rdktools-dev']
 # print(weekly_list)
 
 # Create list of subscribed users
@@ -75,9 +75,6 @@ mondbconn.close()
 #print(subscribed_list)
 
 allowedGroups = {} #{'test-list':['rdk_employees', 'rdk_contractors', 'rdk_motorola']}
-#os.chdir('/home/sympa/list_data')
-#configdirs = [name for name in os.listdir(".") if os.path.isdir(name)]
-#print(configdirs)
 print(weekly_list)
 for dir in weekly_list:
     try:
@@ -99,7 +96,7 @@ for dir in weekly_list:
 print(allowedGroups)
 
 # ldap initialize
-ldap_client = ldap.initialize('ldap://:1389')
+ldap_client = ldap.initialize('ldap://ldap.ae.ccp.cable.comcast.com:1389')
 ldap_base = 'ou=CCP,dc=ra,dc=ccp,dc=cable,dc=comcast,dc=com'
 #tesl = ldap_client.search_s(ldap_base, ldap.SCOPE_SUBTREE, '(cn={0})'.format('rdk_employee'))
 #print(tesl)
@@ -121,16 +118,20 @@ for key, value in subscribed_list.iteritems():
         if name in allowedGroups:
             #print(allowedGroups[name])
             for group in allowedGroups[name]:
-                reviewers_result = ldap_client.search_s(ldap_base, ldap.SCOPE_SUBTREE, '(cn={0})'.format(group))
-                if len(reviewers_result)>0:
-                    if user_uid in reviewers_result[0][1].get('memberUid', []):
+                ldap_info_group = ldap_client.search_s(ldap_base, ldap.SCOPE_SUBTREE, '(cn={0})'.format(group))
+                try:
+                    if user_uid in ldap_info_group[0][1].get('memberUid', []):
                         print(user_uid)
                         if name in sub_list:
-                            print("yes")
+                            print("fine")
                             weekly_msg += '<div><label>{0}: </label><b>new</b></div>'.format(name)
+                            break
                         else:
-                            print("yes too")
+                            print("fine too")
                             weekly_msg += '<div><label>{0}: </label><a href="https://rdklistmgr.ccp.xcal.tv/sympa/subscribe/{0}">sub</a></div>'.format(name)
+                            break
+                except:
+                    continue
         else:
             if name in sub_list:
                 weekly_msg += '<div><label>{0}: </label><b>new</b></div>'.format(name)
@@ -140,7 +141,7 @@ for key, value in subscribed_list.iteritems():
     msg['Subject'] = 'RDK Mailing weekly subscription digest'
     msg['To'] = key
     print(key)
-    # for test!!!!
+    #for testing!!!!!!!!!!!!!!!!!!!
     if 'raju_kakkerla' in key:
         print(msg.as_string())
         #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
@@ -148,3 +149,5 @@ for key, value in subscribed_list.iteritems():
         #print(msg.as_string())
     #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
     #p.communicate(msg.as_string())
+
+
