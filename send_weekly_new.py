@@ -29,7 +29,7 @@ while (1):
         except IndexError:
             sys.exit(1)
 # for testing
-weekly_list = ['arris_xg1v3-daily-changes', 'rdktools-dev', 'samsung_xg2v1-daily-changes']
+#weekly_list = ['arris_xg1v3-daily-changes', 'rdktools-dev', 'samsung_xg2v1-daily-changes']
 
 # Create list of subscribed users
 user_list = []
@@ -80,7 +80,8 @@ for dir in weekly_list:
             file=open('/home/sympa/list_data/{0}/config'.format(dir),'r')
             print("{0} in home".format(dir))
     except IOError as e:
-        print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        #print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        continue
     text = file.read()
     res_groups = []
     tes_str = re.findall(r'custom_vars\nvalue (.*)\n', text)
@@ -96,19 +97,18 @@ print(weekly_list)
 print(allowedGroups)
 
 # ldap initialize
-ldap_client = ldap.initialize('ldap://:1389')
+ldap_client = ldap.initialize('')
 ldap_base = 'ou=CCP,dc=ra,dc=ccp,dc=cable,dc=comcast,dc=com'
 
 # Send emails to users
 for key, value in subscribed_list.iteritems():
     weekly_msg = '<h3>New subscribtion lists for this week:</h3>'
+    test_wm = weekly_msg
     sub_list = '<html><head></head><body><h3>Your subscribtions:</h3>'
-    #print(key)
     email_info = ldap_client.search_s(ldap_base, ldap.SCOPE_SUBTREE, '(mail={0})'.format(key))
     try:
         user_uid = email_info[0][1]['uid'][0]
     except:
-        #prin
         user_uid = None
     for name in value:
         sub_list += '<div><label>{0}: </label><a href="https://rdklistmgr.ccp.xcal.tv/sympa/signoff/{0}">unsub</a></div>'.format(name)
@@ -119,25 +119,24 @@ for key, value in subscribed_list.iteritems():
                 try:
                     if user_uid in ldap_info_group[0][1].get('memberUid', []):
                         if name in sub_list:
-                            print("fine")
                             weekly_msg += '<div><label>{0}: </label><b>new</b></div>'.format(name)
                             break
                         else:
-                            print("fine too")
                             weekly_msg += '<div><label>{0}: </label><a href="https://rdklistmgr.ccp.xcal.tv/sympa/subscribe/{0}">sub</a></div>'.format(name)
                             break
                 except:
                     continue
         else:
             continue
+    if weekly_msg==test_wm:
+        weekly_msg=''
     msg = MIMEText('{0}<br>{1}</body></html>'.format(sub_list,weekly_msg), 'html')
     msg['Subject'] = 'RDK Mailing weekly subscription digest'
     msg['To'] = key
     print(key)
-    if 'raju_kakkerla' in key:
+    if 'ababich' in key:
         print(msg.as_string())
-        #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
-        #p.communicate(msg.as_string())
-        #print(msg.as_string())
+        p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
+        p.communicate(msg.as_string())
     #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
     #p.communicate(msg.as_string())
