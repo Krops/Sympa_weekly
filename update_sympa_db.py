@@ -3,7 +3,7 @@
 import pgdb
 import sys
 
-table_list = {}
+
 current_table = ''
 result_string = ''
 mondbconn = pgdb.connect(user='postgres', password='', database='sympa', host='localhost')
@@ -30,6 +30,7 @@ print(list_names)
 print('\n')
 
 # Get creators and creation data
+table_list = {}
 for name in list_names:
     sql_get_creator_date_list = "select list_admin,date_admin from admin_table where list_admin=%s  order by date_admin limit 1"
     try:
