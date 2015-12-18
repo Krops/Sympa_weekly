@@ -17,10 +17,10 @@ def parseArgs():
     parser.add_argument('--ldap-server', help='LDAP server', default='ldap://localhost:1389')
     parser.add_argument('--ldap-base', help='Base LDAP scope', default='ou=CCP,dc=ra,dc=ccp,dc=cable,dc=comcast,dc=com')
     parser.add_argument('--user', help='sympa db user', default='sympa_user')
-    parser.add_argument('--sympa-password', help='sympa db password', default='')
+    parser.add_argument('--password', help='sympa db password', default='pass')
     parser.add_argument('--db-host', help='sympa db host', default='localhost')
-    parser.add_argument('--sympa-url', help='sympa server url', default='https://rdklistmgr.ccp.xcal.tv')
-    parser.add_argument('--update-db', help='Add creation column into list table')
+    parser.add_argument('--sympa-url', help='sympa server url', default='https://web.com')
+    parser.add_argument('--update-db', help='Add creation column into list table', default=False)
 
     return parser.parse_args()
 
@@ -29,18 +29,16 @@ def main(args):
     cursor = mondbconn.cursor()
     if args.update_db:
         update_sympa_db(cursor)
-        print("update db")
+        sys.exit(0)
     # ldap initialize
     ldap_client = ldap.initialize(args.ldap_server)
     ldap_base = args.ldap_base
-    sql_get_week_names = "select name_list from list_table where status_list='open' and creation_time_list > current_timestamp - interval '12 days'"
+    sql_get_week_names = "select name_list from list_table where status_list='open' and creation_time_list > current_timestamp - interval '7 days'"
     sql_get_user_sub = "select distinct(user_subscriber) from subscriber_table"
-
     weekly_list = generate_query_list(cursor, sql_get_week_names)
     user_list = generate_query_list(cursor, sql_get_user_sub)
     subscribed_list = generate_sub_dict(cursor, user_list)
     allowedGroups = generate_allowedGroups(weekly_list)
-
     allgroupusers= {}
     for key, value in subscribed_list.iteritems():
         weekly_msg = '<h3>New subscribtion lists for this week:</h3>'
@@ -52,18 +50,17 @@ def main(args):
         except:
             user_uid = None
         for name in value:
-            sub_list += '<div><label>{0}: </label><a href="{1}/sympa/signoff/{1}">unsub</a></div>'.format(args.sympa_url, name)
+            sub_list += '<div><label>{1}: </label><a href="{0}/sympa/signoff/{1}">unsub</a></div>'.format(args.sympa_url, name)
         for name in weekly_list:
             if name in allowedGroups:
                 for group in allowedGroups[name]:
                     if group not in allgroupusers:
                         try:
                             allgroupusers[group] = ldap_client.search_s(ldap_base, ldap.SCOPE_SUBTREE, '(cn={0})'.format(group))[0][1].get('memberUid',[])
-                            print(group)
                         except:
                             continue
                     if user_uid in allgroupusers[group]:
-                        print("{0} in {1}".format(key, name))
+                        #print("{0} in {1} list".format(user_uid, name))
                         if name in sub_list:
                             weekly_msg += '<div><label>{0}: </label><b>new</b></div>'.format(name)
                             break
@@ -76,13 +73,8 @@ def main(args):
         msg['Subject'] = 'RDK Mailing weekly subscription digest'
         msg['To'] = key
         print(key)
-        if 'ababich' in key:
-            print(msg.as_string())
-            #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
-            #p.communicate(msg.as_string())
-            #print(msg.as_string())
-        #p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
-        #p.communicate(msg.as_string())
+        p = Popen(["/usr/sbin/sendmail", "-t", "-oi"], stdin=PIPE)
+        p.communicate(msg.as_string())
 
 def generate_query_list(cursor, sql_query):
     gen_list = []
@@ -151,8 +143,9 @@ def generate_allowedGroups(weekly_list):
 def update_sympa_db(cursor):
     get_list_names = "select name_list from list_table;"
     list_names = generate_query_list(cursor, get_list_names)
-    table_list = generate_table_list(cursor)
-    
+    table_list = generate_table_list(cursor, list_names)
+    print(list_names)
+    print(table_list)
     sql_add_new_col_list = "alter table list_table add column creation_time_list timestamp not null default current_timestamp"
     try:
         cursor.execute(sql_add_new_col_list)
@@ -168,22 +161,24 @@ def update_sympa_db(cursor):
     mondbconn.commit()
     cursor.close()
     mondbconn.close()
+    print("Sympa DB updated")
     
-def generate_table_list(cursor):
+def generate_table_list(cursor, list_names):
     table_list = {}
     for name in list_names:
         sql_get_creator_date_list = "select list_admin,date_admin from admin_table where list_admin=%s  order by date_admin limit 1"
         try:
-            ursor.execute(sql_get_creator_date_list, (name,))
+            cursor.execute(sql_get_creator_date_list, (name,))
         except (TypeError, ValueError, pgdb.ProgrammingError, pgdb.InternalError):
             sys.exit(1)
-        row = cursor.fetchone()
         while (1):
+            row = cursor.fetchone()
             if row is None:
-                continue
+                break
             else:
                 try:
                     table_list[row[0]] = row[1]
+                    print(table_list[row[0]])
                 except IndexError:
                     sys.exit(1)
     return table_list
